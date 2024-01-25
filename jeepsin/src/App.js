@@ -1,9 +1,15 @@
 import './App.css';
+import NavbarComponent from './Components/Navbar';
+import Footer from './Components/Footer';
+import HomePage from './Pages/HomePage';
+
 
 function App() {
   return (
     <div className="App">
-      hello
+      <NavbarComponent/>
+      <HomePage/>
+      <Footer/>
     </div>
   );
 }
