@@ -5,13 +5,11 @@ const NavbarComponent = () => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        {/* Logo */}
         <Navbar.Brand href="#home">JeepsIN</Navbar.Brand>
 
         {/* Collapse button for small screens */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        {/* Navbar links */}
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
             <Nav.Link href="#home">Home</Nav.Link>
