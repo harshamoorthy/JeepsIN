@@ -14,6 +14,7 @@ function App(){
         <NavbarComponent/>
         <Routes>
           <Route path='/' exact Component={HomePage}/>
+          <Route path ='/signup' element={Signup /} />
           <Route path='/login' Component={Login}/>
         </Routes>
         <Footer/>
