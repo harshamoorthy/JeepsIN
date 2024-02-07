@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');  
-const { connect_to_db, getProducts } = require("./db");
-const userModel = require('./user');
+const { connect_to_db, getProducts} = require("./db");
+const { MongoClient } = require("mongodb");
+const bcryptjs = require('bcryptjs');
+require("dotenv").config();
+
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 5000;
@@ -23,11 +26,23 @@ connect_to_db()
       }
     });
 
-    app.post("/signup",async (req,res) => {
-      await userModel.create(req.body)
-      .then(users => res.json(users))
-      .catch(err => res.json(err))
+    app.post("/signup", async (req, res) => {
+      try {
+        const client = new MongoClient(process.env.DB_URL);
+        const db = client.db();
+
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(req.body.password, salt);
+        req.body.password = hashedPassword;
+
+          const newUser = await db.collection("users").insertOne(req.body);
+          res.json({ "user": newUser });
+      } catch (err) {
+          console.error(err);
+          res.status(400).json({ "err": err.message });
+      }
   });
+  
 
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
