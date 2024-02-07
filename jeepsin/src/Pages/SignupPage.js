@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 
 function Signup(){
-    const [username,setUsername] = useState();
-    const [password,setPassword] = useState();
-    const [confirm_password,setConfirmPassword] = useState();
-    const [email,setEmail] = useState();
-    const [error,setError] = useState();
+    const [username,setUsername] = useState("");
+    const [password,setPassword] = useState("");
+    const [confirm_password,setConfirmPassword] = useState("");
+    const [email,setEmail] = useState("");
+    const [error,setError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,9 +36,12 @@ function Signup(){
             return;
         }
 
-        axios.post("http://localhost:3000/signup",{username,password,email})
-        .then(result => console.log(result))
-        .catch(err=> console.log(err))
+        axios.post("http://localhost:8000/signup",{username,password,email})
+        .then(result => console.log(JSON.stringify(result.data)))
+        .catch(err=> {
+            console.log(err);
+            setError("Failed to Sign you in...try again");
+        })
     }
 
     return(

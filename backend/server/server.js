@@ -23,8 +23,8 @@ connect_to_db()
       }
     });
 
-    app.post("/signup",(req,res) => {
-      userModel.create(req.body)
+    app.post("/signup",async (req,res) => {
+      await userModel.create(req.body)
       .then(users => res.json(users))
       .catch(err => res.json(err))
   });
