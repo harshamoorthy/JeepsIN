@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');  
 const { connect_to_db, getProducts } = require("./db");
+const userModel = require('./user');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 5000;
@@ -21,6 +22,12 @@ connect_to_db()
         res.status(500).json({ error: "Internal Server Error" });
       }
     });
+
+    app.post("/signup",(req,res) => {
+      userModel.create(req.body)
+      .then(users => res.json(users))
+      .catch(err => res.json(err))
+  });
 
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
