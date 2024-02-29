@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');  
 const { connect_to_db, getProducts } = require("./db");
+const userModel = require('./user');
+
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 5000;
@@ -8,6 +10,8 @@ const PORT = process.env.SERVER_PORT || 5000;
 app.use(cors());  // Enable CORS
 
 app.use(express.json());
+
+
 
 connect_to_db()
   .then(() => {
@@ -22,6 +26,12 @@ connect_to_db()
       }
     });
 
+    app.post('/signup', async (req,res) => {
+      await userModel.create(req.body)
+      .then(users => res.json(users))
+      .catch(err => res.json(err))
+    })
+
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
     });
@@ -29,3 +39,5 @@ connect_to_db()
   .catch((error) => {
     console.error("Error connecting to the database:", error);
   });
+
+  

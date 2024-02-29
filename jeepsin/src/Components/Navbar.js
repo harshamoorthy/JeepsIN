@@ -15,6 +15,7 @@ const NavbarComponent = () => {
             <Nav.Link href="#home">Home</Nav.Link>
             <Nav.Link href="#features">Features</Nav.Link>
             <Nav.Link href="#about">About</Nav.Link>
+            <Nav.Link href="./login">Login</Nav.Link>
             {/* Add more Nav.Link components for additional links */}
           </Nav>
         </Navbar.Collapse>
