@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import NavbarComponent from './Components/Navbar';
 import Footer from './Components/Footer';
 import HomePage from './Pages/HomePage';
-import Login from './Pages/Login'; 
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Signup from './Pages/SignupPage'
+import Login from './Pages/Login';
 
 
 function App(){
@@ -15,6 +17,7 @@ function App(){
         <Routes>
           <Route path='/' exact Component={HomePage}/>
           <Route path='/login' Component={Login}/>
+          <Route path='/signup' element={<Signup />}></Route>
         </Routes>
         <Footer/>
       </Router>

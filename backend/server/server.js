@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');  
-const { connect_to_db, getProducts } = require("./db");
+const { connect_to_db, getProducts} = require("./db");
+const { MongoClient } = require("mongodb");
+const bcryptjs = require('bcryptjs');
+require("dotenv").config();
 const userModel = require('./user');
 
 
