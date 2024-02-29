@@ -1,4 +1,6 @@
 import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import NavbarComponent from './Components/Navbar';
 import Footer from './Components/Footer';
 import HomePage from './Pages/HomePage';
@@ -6,10 +8,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Signup from './Pages/SignupPage'
 import Admin from './Pages/Admin'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import Login from './Pages/Login';
 
 
-function App() {
-  return (
+function App(){
+  return(
     <div className="App">
       <BrowserRouter>
       <NavbarComponent/>

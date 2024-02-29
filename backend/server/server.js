@@ -4,6 +4,7 @@ const { connect_to_db, getProducts} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 require("dotenv").config();
+const userModel = require('./user');
 
 
 const app = express();
@@ -12,6 +13,8 @@ const PORT = process.env.SERVER_PORT || 5000;
 app.use(cors());  // Enable CORS
 
 app.use(express.json());
+
+
 
 connect_to_db()
   .then(() => {
@@ -26,23 +29,11 @@ connect_to_db()
       }
     });
 
-    app.post("/signup", async (req, res) => {
-      try {
-        const client = new MongoClient(process.env.DB_URL);
-        const db = client.db();
-
-        const salt = await bcryptjs.genSalt(10);
-        const hashedPassword = await bcryptjs.hash(req.body.password, salt);
-        req.body.password = hashedPassword;
-
-          const newUser = await db.collection("users").insertOne(req.body);
-          res.json({ "user": newUser });
-      } catch (err) {
-          console.error(err);
-          res.status(400).json({ "err": err.message });
-      }
-  });
-  
+    app.post('/signup', async (req,res) => {
+      await userModel.create(req.body)
+      .then(users => res.json(users))
+      .catch(err => res.json(err))
+    })
 
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
@@ -51,3 +42,5 @@ connect_to_db()
   .catch((error) => {
     console.error("Error connecting to the database:", error);
   });
+
+  
