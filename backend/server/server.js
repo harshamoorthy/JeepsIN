@@ -1,10 +1,11 @@
 const express = require('express');
-const cors = require('cors');  
-const { connect_to_db, getProducts} = require("./db");
+const cors = require('cors');
+const { connect_to_db, getProducts } = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 require("dotenv").config();
 const userModel = require('./user');
+const cartController = require('../controllers/cartController');
 
 
 const app = express();
@@ -29,11 +30,20 @@ connect_to_db()
       }
     });
 
-    app.post('/signup', async (req,res) => {
+    app.post('/signup', async (req, res) => {
       await userModel.create(req.body)
-      .then(users => res.json(users))
-      .catch(err => res.json(err))
+        .then(users => res.json(users))
+        .catch(err => res.json(err))
     })
+
+    //cart routes
+    app.post("/api/cart/add", cartController.addItemToCart);
+    app.delete(
+      "/api/cart/remove/:userId/:productId",
+      cartController.removeItemFromCart
+    );
+    app.get("/api/cart/:userId", cartController.getCart);
+
 
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
@@ -43,4 +53,4 @@ connect_to_db()
     console.error("Error connecting to the database:", error);
   });
 
-  
+
