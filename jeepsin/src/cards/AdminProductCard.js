@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button} from 'react-bootstrap';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onEditClick, onDeleteClick}) => {
   return (
     <Card style={{ width: '18rem' }}>
       <Card.Img variant="top" src={product.image} alt={product.product_name} />
@@ -10,8 +10,8 @@ const ProductCard = ({ product }) => {
         <Card.Text>
           Price: ${product.price}
         </Card.Text>
-        <Button variant="primary">Edit</Button>
-        <Button variant="primary">Delete</Button>
+        <Button variant="primary" onClick={onEditClick}>Edit</Button>
+        <Button variant="primary" onClick={onDeleteClick}>Delete</Button>
       </Card.Body>
     </Card>
   );
