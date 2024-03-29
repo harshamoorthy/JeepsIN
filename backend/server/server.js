@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');  
-const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts} = require("./db");
+const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts, insertQRCode} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
+const QRCode = require('qrcode');
 require("dotenv").config();
 
 
@@ -75,9 +76,34 @@ connect_to_db()
     res.json({deletedProduct})
   })
 
+  //generating QR Code
+  app.post("/api/products/return_product", async (req, res) => {
+    const client = new MongoClient(process.env.DB_URL);
+    const db = client.db();
+
+    const { value } = req.body;
+    console.log("QR value",value);
+    try {
+      // Generate QR code
+      const qrImage = await QRCode.toDataURL(value);
+
+      //store qr code in database
+      await insertQRCode(value, qrImage);
+
+      // Send QR code back to the client
+      res.json({ success: true, qrImage });
+
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+      res.status(500).json({ success: false, error: "Error generating QR code" });
+    }
+  });
+
+
     app.listen(PORT, () => {
       console.log(`Server started at port ${PORT}`);
     });
+
   })
   .catch((error) => {
     console.error("Error connecting to the database:", error);

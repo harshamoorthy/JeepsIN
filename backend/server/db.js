@@ -68,5 +68,11 @@ async function insertProducts(req){
     }
   }
 
+  async function insertQRCode(value, qrImage) {
+    const result = await db.collection("qrcodes").insertOne({ value, qrImage });
+    console.log("QR code inserted:", result);
+    return result;
+  }
 
-module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts};
+
+module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode};

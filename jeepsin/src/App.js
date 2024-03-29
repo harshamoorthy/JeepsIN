@@ -9,6 +9,7 @@ import Admin from './Pages/Admin'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Login from './Pages/Login';
 import Add_Products from './Pages/Add_Products';
+import Returns from './Pages/ReturnPage';
 
 
 function App(){
@@ -21,6 +22,7 @@ function App(){
       <Route path='/signup' element={<Signup />}></Route>
       <Route path='/login' element={<Login />}></Route> 
       <Route path='/admin' element={<Admin />}></Route>
+      <Route path='/return_product' element={<Returns />}></Route>
       <Route path='/add_products' element={<Add_Products />}></Route>
     </Routes>
     <Footer/>
