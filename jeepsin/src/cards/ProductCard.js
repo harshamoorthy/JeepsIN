@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import './Productcard.css'; 
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
   return (
@@ -11,7 +12,7 @@ const ProductCard = ({ product }) => {
         <Card.Text>
           Price: ${product.price}
         </Card.Text>
-        <Button variant="primary">View Details</Button>
+        <Link class="btn btn-dark w-100" to={`productdetails/${product._id}`}>View Details</Link>
       </Card.Body>
     </Card>
   );

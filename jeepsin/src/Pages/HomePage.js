@@ -40,7 +40,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 mb-5">
       <Carousel className="Carousel">
         {carouselItems.map((item) => (
           <Carousel.Item key={item.id}>

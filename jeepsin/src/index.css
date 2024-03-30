@@ -8,3 +8,10 @@ button{
     background-color: black !important;
     border: 0px !important;
 }
+
+.product-details{
+    padding: 40px;
+}
+.product-details-image img{
+    width: 100%;
+}

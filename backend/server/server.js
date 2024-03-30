@@ -1,14 +1,14 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts, insertQRCode} = require("./db");
+const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts, insertQRCode, getProductById} = require("./db");
 
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
 require("dotenv").config();
 
-const userModel = require('./user');
+// const userModel = require('./user');
 const cartController = require('../controllers/cartController');
 
 
@@ -34,6 +34,19 @@ connect_to_db()
       }
     });
 
+    app.get("/api/products/:id", async (req, res) => {
+      try {
+        const productId = req.params.id;
+        const product = await getProductById(productId); 
+        if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+        }
+        res.json(product);
+      } catch (error) {
+        console.error("Error getting product by ID:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 
     app.post('/signup', async (req, res) => {
       await userModel.create(req.body)
