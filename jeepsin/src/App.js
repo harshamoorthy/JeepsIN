@@ -13,6 +13,8 @@ import CartPage from './Pages/CartPage';
 
 import Add_Products from './Pages/Add_Products';
 import Returns from './Pages/ReturnPage';
+import ProductDetails from './Pages/ProductDetails';
+
 
 
 
@@ -30,6 +32,8 @@ function App(){
       <Route path='/return_product' element={<Returns />}></Route>
       <Route path='/add_products' element={<Add_Products />}></Route>
       <Route path='/cart' element={<CartPage />}></Route>
+      <Route path='/productdetails/:id' element={<ProductDetails />}></Route>
+
     </Routes>
     <Footer/>
     </BrowserRouter>
