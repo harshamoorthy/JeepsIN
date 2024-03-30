@@ -10,6 +10,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Login from './Pages/Login';
 import Add_Products from './Pages/Add_Products';
 import Returns from './Pages/ReturnPage';
+import ProductDetails from './Pages/ProductDetails';
 
 
 function App(){
@@ -24,6 +25,7 @@ function App(){
       <Route path='/admin' element={<Admin />}></Route>
       <Route path='/return_product' element={<Returns />}></Route>
       <Route path='/add_products' element={<Add_Products />}></Route>
+      <Route path='/productdetails/:id' element={<ProductDetails />}></Route>
     </Routes>
     <Footer/>
     </BrowserRouter>
