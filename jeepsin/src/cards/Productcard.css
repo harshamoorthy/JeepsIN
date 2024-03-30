@@ -1,0 +1,13 @@
+.product-card {
+    height: 100%;
+  }
+  
+  .product-img {
+    height: 200px; /* Set desired height */
+    object-fit: cover; /* Ensure image covers the entire space */
+    width: 100%; /* Ensure image takes full width of the card */
+  }
+  
+  .product-title{
+    height :80px;
+  }
