@@ -8,13 +8,18 @@ import Signup from './Pages/SignupPage'
 import Admin from './Pages/Admin'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Login from './Pages/Login';
+
+import CartPage from './Pages/CartPage';
+
 import Add_Products from './Pages/Add_Products';
 import Returns from './Pages/ReturnPage';
+
 
 
 function App(){
   return(
     <div className="App">
+
       <BrowserRouter>
       <NavbarComponent/>
     <Routes>
@@ -24,11 +29,13 @@ function App(){
       <Route path='/admin' element={<Admin />}></Route>
       <Route path='/return_product' element={<Returns />}></Route>
       <Route path='/add_products' element={<Add_Products />}></Route>
+      <Route path='/cart' element={<CartPage />}></Route>
     </Routes>
     <Footer/>
     </BrowserRouter>
     </div>
   );
+
 }
 
 export default App;
