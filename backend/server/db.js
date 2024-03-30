@@ -28,6 +28,16 @@ async function insertProducts(req){
   
 }
 
+async function getProductById(productId) {
+  try {
+    const product = await db.collection("products").findOne({ _id: new ObjectId(productId) });
+    return product;
+  } catch (error) {
+    console.error("Error getting product by ID:", error);
+    throw new Error("Failed to get product by ID");
+  }
+}
+
   async function deleteProduct(req) {
     try {
       const productId = req.params.id
@@ -75,4 +85,4 @@ async function insertProducts(req){
   }
 
 
-module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode};
+module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById};
