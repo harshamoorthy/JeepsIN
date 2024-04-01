@@ -12,6 +12,26 @@ const ProductDetails = () => {
             .catch(error => console.error('Error fetching product:', error));
     }, [id]);
 
+    const handleAddToCart = () => {
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        fetch('http://localhost:8000/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: id,
+                quantity
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Item added to cart:', data);
+        })
+        .catch(error => console.error('Error adding product to cart:', error));
+    };
+
     if (!product) {
         return <div>Loading...</div>;
     }
@@ -29,7 +49,7 @@ const ProductDetails = () => {
                     <input type="number" id="quantity" name="quantity" defaultValue="1" />
                 </div>
                 <div>
-                    <button className="btn-dark">Add to Cart</button>
+                    <button className="btn-dark" onClick={handleAddToCart}>Add to Cart</button>
                 </div>
             </div>
         </div>
