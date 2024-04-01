@@ -132,7 +132,7 @@ connect_to_db()
       "/api/cart/remove/:userId/:productId",
       cartController.removeItemFromCart
     );
-    app.get("/api/cart/:userId", cartController.getCart);
+    app.get("/api/cart", cartController.getCart);
 
 
     app.listen(PORT, () => {

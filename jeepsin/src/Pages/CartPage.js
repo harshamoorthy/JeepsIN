@@ -1,30 +1,69 @@
 import React from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Button } from 'react-bootstrap';
 import CartProductCard from '../cards/CartProductCard';
 
 class CartPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [
-        { id: 1, title: 'Product 1', price: 100, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 2, title: 'Product 2', price: 200, quantity: 2 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 3, title: 'Product 3', price: 300, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-      ],
+      products: [],
+      loading: true,
     };
   }
+
+  componentDidMount() {
+    this.fetchCartData();
+  }
+
+  fetchCartData() {
+    fetch('http://localhost:8000/api/cart') // Adjust this URL to your API endpoint
+        .then(response => response.json())
+        .then(cartData => {
+            // Flatten the products array and remove duplicates
+            const allProducts = cartData.reduce((acc, cartEntry) => {
+                cartEntry.updatedCart.products.forEach(product => {
+                    if (!acc.some(p => p.productId === product.productId)) {
+                        acc.push(product);
+                    }
+                });
+                return acc;
+            }, []);
+
+            // Fetch details for each product
+            const productFetchPromises = allProducts.map(product =>
+                fetch(`http://localhost:8000/api/products/${product.productId}`)
+                    .then(response => response.json())
+                    .then(productDetails => ({
+                        ...productDetails, // Assume this has price and other details
+                        quantity: product.quantity,
+                    }))
+            );
+
+            Promise.all(productFetchPromises)
+                .then(products => this.setState({ products, loading: false }))
+                .catch(error => {
+                    console.error('Error fetching product details:', error);
+                    this.setState({ loading: false });
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching cart data:', error);
+            this.setState({ loading: false });
+        });
+}
+
 
   handleQuantityChange = (productId, quantity) => {
     this.setState(prevState => ({
       products: prevState.products.map(product =>
-        product.id === productId ? { ...product, quantity: parseInt(quantity, 10) } : product
+        product.productId === productId ? { ...product, quantity: parseInt(quantity, 10) } : product
       ),
     }));
   };
 
   handleRemoveProduct = (productId) => {
     this.setState(prevState => ({
-      products: prevState.products.filter(product => product.id !== productId),
+      products: prevState.products.filter(product => product.productId !== productId),
     }));
   };
 
@@ -33,8 +72,12 @@ class CartPage extends React.Component {
   };
 
   render() {
-    const { products } = this.state;
+    const { products, loading } = this.state;
     const subtotal = this.calculateSubtotal();
+
+    if (loading) {
+      return <Container><div>Loading cart...</div></Container>;
+    }
 
     return (
       <Container>
@@ -42,9 +85,9 @@ class CartPage extends React.Component {
         <hr></hr>
         <Row>
           <div className='col-12 col-sm-8'>
-            {products.map(product => (
+            {products.map((product, index) => (
               <CartProductCard
-                key={product.id}
+                key={index}
                 product={product}
                 onQuantityChange={this.handleQuantityChange}
                 onRemoveProduct={this.handleRemoveProduct}

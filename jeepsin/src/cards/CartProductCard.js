@@ -12,9 +12,9 @@ const CartProductCard = ({ product, onQuantityChange, onRemoveProduct }) => {
 
   return (
     <Card className="mb-3 d-flex flex-row">
-      <Card.Img variant="top" className="w-25 object-fit-cover " src={product.imageUrl} alt={product.title} />
+      <Card.Img variant="top" className="w-25 object-fit-cover " src={product.image} alt={product.product_name} />
       <Card.Body>
-        <Card.Title>{product.title}</Card.Title>
+        <Card.Title>{product.product_name}</Card.Title>
         <Card.Text>Price: ${product.price}</Card.Text>
         <Form>
           <Form.Group controlId={`quantity-${product.id}`}>
