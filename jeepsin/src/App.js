@@ -7,6 +7,8 @@ import HomePage from './Pages/HomePage';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Signup from './Pages/SignupPage'
 import Login from './Pages/Login';
+import CheckoutForm from './Pages/CheckoutForm';
+import PrivateRoute from './Components/PrivateRoute';
 
 
 function App(){
@@ -15,9 +17,10 @@ function App(){
       <Router>
         <NavbarComponent/>
         <Routes>
-          <Route path='/' exact Component={HomePage}/>
-          <Route path='/login' Component={Login}/>
+          <Route path='/' exact element={<HomePage />}/>
+          <Route path='/login'  element={<Login />}/>
           <Route path='/signup' element={<Signup />}></Route>
+          <Route path='/checkout' element={<CheckoutForm />}></Route>
         </Routes>
         <Footer/>
       </Router>

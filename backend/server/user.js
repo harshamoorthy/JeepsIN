@@ -28,10 +28,12 @@ const userSchema = new mongoose.Schema({
 //hashing the password before saving it
 userSchema.pre('save', async function(next){
     const user = this;
+    console.log("user ", user);
     if(user.isModified('password')){
         const salt = await bcryptjs.genSalt(10);
         user.password = await bcryptjs.hash(user.password,salt);
     }
+    console.log("user 2 ", user);
     next();
 })
 

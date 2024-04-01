@@ -15,11 +15,15 @@ async function connect_to_db() {
 }
 
 async function getProducts() {
-    const products = await db.collection("Products").find({}).toArray();
-    // console.log(products)
+    const products = await db.collection("products").find({}).toArray();
     return products;
+  }
+
+  async function getUserByUsername(username){
+    const user = await db.collection("users").findOne({ username });
+    return user;
   }
 
 
 
-module.exports = { connect_to_db ,getProducts};
+module.exports = { connect_to_db ,getProducts, getUserByUsername};

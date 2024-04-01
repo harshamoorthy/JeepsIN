@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ProductCard from "../cards/ProductCard";
+import axios from "axios";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the API endpoint
-    fetch("http://localhost:8000/api/products")
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      // Fetch data from the API endpoint
+     const response = await axios.get("http://localhost:8000/api/products");
+     
+     setProducts(response?.data);
+   } catch (error) {
+     console.error("Error fetching data:", error);
+   }
+  
+  }
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Homepage</h2>
