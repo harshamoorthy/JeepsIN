@@ -1,0 +1,17 @@
+.Carousel img{
+    height: 600px;
+    object-fit: cover;
+}
+
+button{
+    width: 100% !important;
+    background-color: black !important;
+    border: 0px !important;
+}
+
+.product-details{
+    padding: 40px;
+}
+.product-details-image img{
+    width: 100%;
+}
