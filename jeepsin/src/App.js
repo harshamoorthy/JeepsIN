@@ -8,6 +8,8 @@ import Signup from './Pages/SignupPage'
 import Admin from './Pages/Admin'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Login from './Pages/Login';
+import CheckoutForm from './Pages/CheckoutForm';
+import PrivateRoute from './Components/PrivateRoute';
 
 import CartPage from './Pages/CartPage';
 

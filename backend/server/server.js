@@ -1,8 +1,7 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts, insertQRCode, getProductById} = require("./db");
-
+const { connect_to_db, getProducts} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
@@ -34,24 +33,10 @@ connect_to_db()
       }
     });
 
-    app.get("/api/products/:id", async (req, res) => {
-      try {
-        const productId = req.params.id;
-        const product = await getProductById(productId); 
-        if (!product) {
-          return res.status(404).json({ error: "Product not found" });
-        }
-        res.json(product);
-      } catch (error) {
-        console.error("Error getting product by ID:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-      }
-    });
-
-    app.post('/signup', async (req, res) => {
+    app.post('/signup', async (req,res) => {
       await userModel.create(req.body)
-        .then(users => res.json(users))
-        .catch(err => res.json(err))
+      .then(users => res.json(users))
+      .catch(err => res.json(err))
     })
 
     //signup functionality
@@ -133,6 +118,7 @@ connect_to_db()
       cartController.removeItemFromCart
     );
     app.get("/api/cart", cartController.getCart);
+
 
 
     app.listen(PORT, () => {
