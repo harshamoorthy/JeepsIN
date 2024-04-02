@@ -1,8 +1,7 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db, getProducts,insertProducts, deleteProduct,editedProducts, insertQRCode, getProductById} = require("./db");
-
+const { connect_to_db, getProducts} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
@@ -129,6 +128,7 @@ connect_to_db()
       cartController.removeItemFromCart
     );
     app.get("/api/cart", cartController.getCart);
+
 
 
     app.listen(PORT, () => {
