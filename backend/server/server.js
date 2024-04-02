@@ -48,11 +48,7 @@ connect_to_db()
       }
     });
 
-    app.post('/signup', async (req, res) => {
-      await userModel.create(req.body)
-        .then(users => res.json(users))
-        .catch(err => res.json(err))
-    })
+
 
     //signup functionality
     app.post("/signup", async (req, res) => {

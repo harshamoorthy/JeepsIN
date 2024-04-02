@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import AdminProductCard from "../cards/AdminProductCard";
+import { Link } from "react-router-dom";
+
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -91,6 +93,11 @@ const Admin = () => {
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Admin Panel</h2>
+      <h4>Want to add a new product ? </h4>
+      <Link to="/add_products">
+      <Button variant="primary" className="mt-3">Add New Product</Button>
+      </Link>
+      <br /><br />
       {/* Display existing products */}
       <Row className="gx-4">
         {products.map((product) => (
