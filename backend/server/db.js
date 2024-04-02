@@ -26,10 +26,7 @@ async function getProducts() {
 
 
 
-module.exports = { connect_to_db ,getProducts, getUserByUsername};
-    // console.log(products)
-    return products;
-  }
+
 
 async function insertProducts(req){
   const {product_name,price,image} = req.body;
