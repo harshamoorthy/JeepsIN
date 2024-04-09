@@ -17,6 +17,7 @@ const NavbarComponent = () => {
             <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link href="/signup">Signup</Nav.Link>
             <Nav.Link href="/cart">Cart</Nav.Link>
+            <Nav.Link href="/checkout">Checkout</Nav.Link>
             {/* Add more Nav.Link components for additional links */}
           </Nav>
         </Navbar.Collapse>

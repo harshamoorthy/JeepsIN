@@ -45,9 +45,9 @@ function Signup(){
     }
 
     return(
-        <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
+        <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="bg-white p-3 rounded w-25">
-                <h2>Signup here...</h2>
+                <h2>We would love you to be one of us...</h2>
                 {error && <p className="text-danger">{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -74,12 +74,12 @@ function Signup(){
                         </label>
                         <input type="email" placeholder="Enter email" autoComplete="off" name="email" className="form-control rounded-0" onChange={(e) => setEmail(e.target.value)} />
                     </div>
-                    <button type="submit" className="btn btn-success rounded-0">
+                    <button type="submit" className="btn btn-success rounded-1">
                         Signup
                     </button>
                 </form>
                     <p>Already have an account ?</p>
-                    <Link to="/signup" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
+                    <Link to="/signup" className="btn btn-info border w-100 rounded-1 text-decoration-none">
                         Login
                     </Link>
                 

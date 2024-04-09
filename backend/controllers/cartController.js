@@ -26,9 +26,34 @@ async function getCartitem() {
 
 async function saveCart(updatedCart) {
     const db = await getDbConnection();
-    await db.collection("cartitem").insertOne( {updatedCart} );
-    getCartitem()
+    
+    // Try to fetch the existing cart document. Assume there's only one cart document.
+    const existingCart = await db.collection("cartitem").findOne({});
+    
+    if (existingCart) {
+        // If a cart exists, update the cart document with new product data
+        await db.collection("cartitem").updateOne(
+            { _id: existingCart._id },
+            {
+                $set: { updatedCart }
+            }
+        );
+    } else {
+        // If no cart exists, insert a new cart document
+        await db.collection("cartitem").insertOne({ updatedCart });
+    }
+    
+    // Optionally fetch and log the updated cart data
+    const updatedCartData = await getCartitem();
+    console.log(updatedCartData);
 }
+
+async function getCartitem() {
+    const db = await getDbConnection();
+    const cart = await db.collection("cartitem").findOne({});
+    return cart;
+}
+
 
 async function addItemToCart(req, res) {
     try {
@@ -49,36 +74,54 @@ async function addItemToCart(req, res) {
 }
 
 async function removeItemFromCart(req, res) {
-  try {
-      const { productId } = req.params;
+    try {
+        const { productId } = req.params;
+        console.log(`Removing product with ID: ${productId}`);
+        const db = await getDbConnection();
 
-      // Fetch the current cart from the database
-      const db = await getDbConnection();
-      let cart = await db.collection("cartitem").findOne({}); // Assuming single cart object in collection
+        // Fetch the cart data
+        const cartData = await db.collection("cartitem").findOne({});
+        console.log('Cart data fetched:', cartData);
 
-      if (cart && cart.updatedCart && cart.updatedCart.products) {
-          const productIndex = cart.updatedCart.products.findIndex(p => p.productId === productId);
-          if (productIndex > -1) {
-              const product = cart.updatedCart.products[productIndex];
-              cart.updatedCart.totalItems -= product.quantity;
-              cart.updatedCart.totalPrice -= product.quantity * product.price;
-              cart.updatedCart.products.splice(productIndex, 1);
+        if (!cartData || !cartData.updatedCart || !cartData.updatedCart.products) {
+            return res.status(404).json({ message: "Cart not found or no products in cart" });
+        }
 
-              // Save the updated cart back to the database
-              await db.collection("cartitem").updateOne({ _id: cart._id }, { $set: { updatedCart: cart.updatedCart } });
+        const productsArray = cartData.updatedCart.products;
+        console.log('Products in cart:', productsArray);
 
-              res.json({ message: "Product removed from cart", cart: cart.updatedCart });
-          } else {
-              res.status(404).json({ message: "Product not found in cart" });
-          }
-      } else {
-          res.status(404).json({ message: "Cart not found" });
-      }
-  } catch (error) {
-      console.error("Error removing item from cart:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-  }
+        const productIndex = productsArray.findIndex(product => product.productId === productId);
+        console.log(`Product index in cart: ${productIndex}`);
+
+        if (productIndex > -1) {
+            productsArray.splice(productIndex, 1);
+
+            const updatedTotalItems = productsArray.length;
+            const updatedTotalPrice = productsArray.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+
+            await db.collection("cartitem").updateOne(
+                { _id: cartData._id },
+                { 
+                    $set: {
+                        "updatedCart.products": productsArray,
+                        "updatedCart.totalItems": updatedTotalItems,
+                        "updatedCart.totalPrice": updatedTotalPrice
+                    } 
+                }
+            );
+
+            res.json({ message: "Product removed from cart", cart: cartData.updatedCart });
+        } else {
+            res.status(404).json({ message: "Product not found in cart" });
+        }
+    } catch (error) {
+        console.error("Error removing item from cart:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 }
+
+
+
 
 
 async function getCart(req, res) {

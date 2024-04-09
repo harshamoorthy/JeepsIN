@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container, Row, Button } from 'react-bootstrap';
 import CartProductCard from '../cards/CartProductCard';
+import { Link } from "react-router-dom";
+
 
 class CartPage extends React.Component {
   constructor(props) {
@@ -19,18 +21,17 @@ class CartPage extends React.Component {
     fetch('http://localhost:8000/api/cart') // Adjust this URL to your API endpoint
         .then(response => response.json())
         .then(cartData => {
-            // Flatten the products array and remove duplicates
-            const allProducts = cartData.reduce((acc, cartEntry) => {
-                cartEntry.updatedCart.products.forEach(product => {
-                    if (!acc.some(p => p.productId === product.productId)) {
-                        acc.push(product);
-                    }
-                });
-                return acc;
-            }, []);
+            if (!cartData || !cartData.updatedCart || !cartData.updatedCart.products) {
+                console.error('No cart data found');
+                this.setState({ products: [], loading: false });
+                return;
+            }
+
+            // Assuming cartData directly contains the products or is the array of cart items
+            const productsInCart = cartData.updatedCart ? cartData.updatedCart.products : cartData.products;
 
             // Fetch details for each product
-            const productFetchPromises = allProducts.map(product =>
+            const productFetchPromises = productsInCart.map(product =>
                 fetch(`http://localhost:8000/api/products/${product.productId}`)
                     .then(response => response.json())
                     .then(productDetails => ({
@@ -53,6 +54,7 @@ class CartPage extends React.Component {
 }
 
 
+
   handleQuantityChange = (productId, quantity) => {
     this.setState(prevState => ({
       products: prevState.products.map(product =>
@@ -62,10 +64,32 @@ class CartPage extends React.Component {
   };
 
   handleRemoveProduct = (productId) => {
-    this.setState(prevState => ({
-      products: prevState.products.filter(product => product.productId !== productId),
-    }));
-  };
+    console.log(productId);
+    fetch(`http://localhost:8000/api/cart/remove/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())  // Ensure the backend sends a JSON response
+    .then(data => {
+        if (data.success) {
+            this.setState(prevState => ({
+                // Filter out the product that has been deleted
+                products: prevState.products.filter(product => product.productId !== productId),
+            }));
+        } else {
+            // Log or display an error message if the operation was not successful
+            console.error('Error removing product from cart:', data.message);
+        }
+        this.fetchCartData()
+    })
+    .catch(error => {
+        console.error('Error removing product from cart:', error);
+    });
+};
+
+  
 
   calculateSubtotal = () => {
     return this.state.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
@@ -97,7 +121,9 @@ class CartPage extends React.Component {
           <div className='col-12 col-sm-4'>
             <h4>Price Details</h4>
             <p>Subtotal: ${subtotal}</p>
+            <Link to="/checkout">
             <Button variant="primary">Proceed to Checkout</Button>
+            </Link>
           </div>
         </Row>
       </Container>

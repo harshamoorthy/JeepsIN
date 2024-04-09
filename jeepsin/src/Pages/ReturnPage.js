@@ -31,7 +31,7 @@ const ReturnPage = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
+    <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="bg-white p-3 rounded w-75">
         <h1> Return your product here... </h1>
         {error && <p className="text-danger">{error}</p>}
@@ -42,7 +42,7 @@ const ReturnPage = () => {
             </label>
             <input type="text" placeholder="Enter Order ID" autoComplete="off" name="OrderID" className="form-control rounded-0" onChange={(e) => setOrderID(e.target.value)} />
           </div>
-          <button type="submit" className="btn btn-success rounded-0">
+          <button type="submit" className="btn btn-success rounded-1">
             Proceed
           </button>
         </form>

@@ -1,7 +1,7 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById} = require("./db");
+const { connect_to_db ,getProducts, insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, getUserByUsername} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
@@ -67,6 +67,43 @@ connect_to_db()
       }
   });
 
+  //login 
+  app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+  
+    // Validate request body
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+  
+    try {
+      const user = await getUserByUsername(username);
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+  
+      // Compare the provided password with the stored hash
+      const isMatch = await bcryptjs.compare(password, user.password);
+  
+      // Check if the passwords match
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Invalid credentials.' });
+      }
+  
+      // Generate a JWT token (optional)
+      // const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+  
+      // Send a response with the user data (without the password)
+      res.json({ _id: user._id, username: user.username, email: user.email });
+  
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+    }
+  });
+
   //adding products
   app.post("/api/add_product",async (req,res)=>{
 
@@ -124,7 +161,7 @@ connect_to_db()
     //cart routes
     app.post("/api/cart/add", cartController.addItemToCart);
     app.delete(
-      "/api/cart/remove/:userId/:productId",
+      "/api/cart/remove/:productId",
       cartController.removeItemFromCart
     );
     app.get("/api/cart", cartController.getCart);
