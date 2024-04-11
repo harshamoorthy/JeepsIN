@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import CartProductCard from '../cards/CartProductCard';
+import { Link } from 'react-router-dom';
 
 class CartPage extends React.Component {
   constructor(props) {
@@ -54,7 +55,10 @@ class CartPage extends React.Component {
           <div className='col-12 col-sm-4'>
             <h4>Price Details</h4>
             <p>Subtotal: ${subtotal}</p>
-            <Button variant="primary">Proceed to Checkout</Button>
+            {/* <Button variant="primary">Proceed to Checkout</Button> */}
+            <Link to="/checkout" state={{ products, subtotal }}>
+    <Button variant="primary">Proceed to Checkout</Button>
+  </Link>
           </div>
         </Row>
       </Container>

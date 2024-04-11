@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const CheckoutForm = () => {
+  const location = useLocation();
+  const { products, subtotal } = location.state || {};
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -16,9 +20,13 @@ const CheckoutForm = () => {
     expiryDate: '',
     cardHolderName: '',
     paypalEmail: '',
+    products: products || [],
+    subtotal: subtotal || 0,
   });
   const [formErrors, setFormErrors] = useState({});
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [trackingID, setTrackingID] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +40,36 @@ const CheckoutForm = () => {
     });
   };
 
+  const renderOrderReceipt = () => {
+    return (
+      <div>
+        {/* <h5>Order Details</h5> */}
+        {formData.products.map((product, index) => (
+          <div key={index} className="mb-3">
+            <p>
+              {product.title} x {product.quantity} - ${product.price * product.quantity}
+            </p>
+          </div>
+        ))}
+        <hr />
+        <p>Total: ${formData.subtotal}</p>
+      </div>
+    );
+  };
+
+  const renderShipmentDetails = () => {
+    const fullName = `${formData.firstName} ${formData.lastName}`;
+    const fullAddress = `${formData.address}, ${formData.city}, ${formData.postalCode}, ${formData.country}`;
+
+    return (
+      <div>
+        <p>Full Name: {fullName}</p>
+        <p>Address: {fullAddress}</p>
+      </div>
+    );
+  };
+  
+  
   const validateForm = () => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -90,14 +128,98 @@ const CheckoutForm = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      // Handle form submission
-      console.log(formData);
-      // Simulate order placement success
-      setOrderPlaced(true);
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (validateForm()) {
+  //     // Handle form submission
+  //     console.log(formData);
+  //     // Simulate order placement success
+  //     setOrderPlaced(true);
+  //   }
+  // };
+  
+
+  // Update the handleSubmit function to send order details to the backend
+const handleSubmit = async (e) => {
+ e.preventDefault();
+  if (validateForm()) {
+    try {
+
+      // Generate order number (OD-12345) and tracking ID (JP-12345)
+      const orderNumber = `OD-${Math.floor(10000 + Math.random() * 90000)}`;
+      const trackingID = `JP-${Math.floor(10000 + Math.random() * 90000)}`;
+
+      // Set the generated order number and tracking ID
+      setOrderNumber(orderNumber);
+      setTrackingID(trackingID);
+      // Create a new object with order details
+      const orderData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        address: formData.address,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        country: formData.country,
+        products: formData.products,
+        subtotal: formData.subtotal,
+        orderNumber: orderNumber,
+        trackingID: trackingID,
+        
+      };
+
+      // Insert order details and order summary into the database
+      const response = await fetch(`http://localhost:8000/api/place_order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // If order placement is successful, display success message
+        setOrderPlaced(true);
+      } else {
+        // If there's an error, display error message
+        console.error("Error placing order:", data.error);
+        // Handle error display here
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      // Handle error display here
     }
+  }
+};
+
+
+  const renderOrderSummary = () => {
+    return (
+      <div className="order-summary">
+        <h4 className="order-summary__title">Order Summary</h4>
+        <div className="order-summary__items">
+          {formData.products.map((product) => (
+            <div key={product.id} className="order-summary__item">
+              <div className="order-summary__item-image">
+                <img src={product.imageUrl} alt={product.title} />
+              </div>
+              <div className="order-summary__item-details">
+                <h5 className="order-summary__item-title">{product.title}</h5>
+                <p className="order-summary__item-quantity">
+                  Quantity: {product.quantity}
+                </p>
+                <p className="order-summary__item-price">
+                  Price: ${product.price}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="order-summary__total">
+          <p>Total: ${formData.subtotal}</p>
+        </div>
+      </div>
+    );
   };
 
   const renderPaymentFields = () => {
@@ -170,6 +292,8 @@ const CheckoutForm = () => {
     }
   };
 
+ 
+
   const successMessageStyles = {
     padding: '70px',
     fontSize: '30px',
@@ -185,14 +309,17 @@ const CheckoutForm = () => {
   return (
     <Container className="mt-4">
       <Row className="justify-content-center">
-        <Col md={6}>
+        <Col md={7}>
 
-        {!orderPlaced && (
+        {!orderPlaced && (        
 
           <Form onSubmit={handleSubmit} className="p-4 border rounded">
-            <h2 className="mb-4 text-center">Checkout</h2>
+            {renderOrderSummary()}
+            <h2 className="mb-4 text-center" style={{ marginTop: '20px' }}>Checkout</h2>
+            
             <Row>
               <Col md={6}>
+              
                 <Form.Group controlId="firstName">
                   <Form.Label>First Name</Form.Label>
                   <Form.Control
@@ -327,31 +454,65 @@ const CheckoutForm = () => {
             </Form.Group>
             <div style={{ marginBottom: '20px' }}></div>
             {renderPaymentFields()}
-            <div className="d-flex justify-content-between" style={buttonsDivStyles}>
+           
+               
+            <div className="d-flex justify-content-center" style={buttonsDivStyles}>
               
-              <Link to="/" className="btn btn-secondary">
+              <Link to="/" className="btn btn-secondary mr-2">
                   Continue Shopping
                 </Link>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" className="custom-btn-primary">
                 Place Order
               </Button>
             </div>
           </Form>
+         
         )}
           {orderPlaced && !Object.keys(formErrors).length && (
             <div>
-            <div
-              role="alert"
-              className="fade mt-3 alert alert-success show"
-              style={successMessageStyles}>
-              Your order has been placed successfully!
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="d-flex align-items-center">
+                  <div style={{ 
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '50%',
+                      backgroundColor: '#28a745',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: '1rem',
+                    }}
+                  >
+                    <i className="fas fa-check" style={{ color: 'white', fontSize: '1.5rem' }}></i>
+                  </div>
+                  <h3>Your order has been placed successfully!</h3>
+                </div>
+              </div>
+              <Row>
+                <Col md={6}>
+                  <div className="order-receipt border p-4 mb-4">
+                    <h4>Order Receipt</h4>
+                    {renderOrderReceipt()}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="shipment-details border p-4 mb-4">
+                    <h4>Shipment Details</h4>
+                    <p>Order Number: {orderNumber}</p>
+                    <p>Tracking ID: {trackingID}</p>
+                    {renderShipmentDetails()}
+                  </div>
+                </Col>
+              </Row>
+              <div className="text-center mb-4">
+                <p>Thanking you for choosing JeepsIN</p>
+              </div>
+              <div className="text-center mt-3">
+                <Link to="/" className="btn btn-primary" style={{ margin: '30px' }}>
+                  Continue Shopping
+                </Link>
+              </div>
             </div>
-            <div className="text-center mt-3">
-              <Link to="/" className="btn btn-primary" style={buttonStyles}>
-                Continue Shopping
-              </Link>
-            </div>
-          </div>
           )}
         </Col>
       </Row>

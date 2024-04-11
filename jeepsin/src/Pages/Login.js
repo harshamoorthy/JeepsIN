@@ -59,7 +59,7 @@ const Login = () => {
             </Form.Group>
             {error && <p className="text-danger">{error}</p>}
             <div className="d-flex justify-content-center ">
-              <Button variant="primary" type="submit" style={{ marginRight: '20px', marginBottom: '30px' }}>
+              <Button variant="primary" type="submit" className="custom-login-btn-primary" style={{ marginRight: '20px', marginBottom: '30px' }}>
                 Login
               </Button>
 

@@ -34,6 +34,7 @@ function App(){
       <Route path='/return_product' element={<Returns />}></Route>
       <Route path='/add_products' element={<Add_Products />}></Route>
       <Route path='/cart' element={<CartPage />}></Route>
+      <Route path='/checkout' element={<CheckoutForm />}></Route>
       <Route path='/productdetails/:id' element={<ProductDetails />}></Route>
 
     </Routes>

@@ -93,4 +93,42 @@ async function getProductById(productId) {
   }
 
 
-module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById};
+  async function insertOrder(req) {
+    const { firstName, lastName, email, address, city, postalCode, country, products, subtotal, orderNumber, trackingID } = req.body;
+  
+    try {
+      const client = new MongoClient(process.env.DB_URL);
+      await client.connect();
+      const db = client.db();
+  
+      // Check if the "orders" collection exists, if not, create it
+      const collectionExists = await db.listCollections({ name: "orders" }).hasNext();
+      if (!collectionExists) {
+        await db.createCollection("orders");
+        console.log("Created 'orders' collection");
+      }
+  
+      // Insert the order into the "orders" collection
+      const result = await db.collection("orders").insertOne({
+        firstName,
+        lastName,
+        email,
+        address,
+        city,
+        postalCode,
+        country,
+        products,
+        subtotal,
+        orderNumber,
+        trackingID
+      });
+  
+      console.log("Order inserted:", result);
+      return result;
+    } catch (error) {
+      console.error("Error inserting order:", error);
+      throw new Error("Failed to insert order");
+    }
+  }
+  
+module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder};

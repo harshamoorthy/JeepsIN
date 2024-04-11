@@ -1,11 +1,13 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById} = require("./db");
+const { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 
 // const userModel = require('./user');
 const cartController = require('../controllers/cartController');
@@ -105,6 +107,26 @@ connect_to_db()
     }
   });
 
+ 
+  //adding orders
+  // app.post("/api/place_order",async (req,res)=>{
+
+  //   const client = new MongoClient(process.env.DB_URL);
+  //   const db = client.db();
+  
+  //   const insertOrder = await insertOrder(req);
+  //   res.json({result : insertOrder})
+  // })
+  //adding orders
+app.post("/api/place_order", async (req, res) => {
+  try {
+    const result = await insertOrder(req);
+    res.json({ result });
+  } catch (error) {
+    console.error("Error placing order:", error);
+    res.status(500).json({ error: "Failed to place order" });
+  }
+});
 
 
     //cart routes
