@@ -1,8 +1,7 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder} = require("./db");
-const { connect_to_db ,getProducts, insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, getUserByUsername} = require("./db");
+const { connect_to_db ,getProducts, insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, getUserByUsername,insertOrder} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
