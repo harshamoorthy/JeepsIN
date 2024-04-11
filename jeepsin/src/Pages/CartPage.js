@@ -1,19 +1,59 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import CartProductCard from '../cards/CartProductCard';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+
 
 class CartPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [
-        { id: 1, title: 'Product 1', price: 100, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 2, title: 'Product 2', price: 200, quantity: 2 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 3, title: 'Product 3', price: 300, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-      ],
+      products: [],
+      loading: true,
     };
   }
+
+  componentDidMount() {
+    this.fetchCartData();
+  }
+
+  fetchCartData() {
+    fetch('http://localhost:8000/api/cart') // Adjust this URL to your API endpoint
+        .then(response => response.json())
+        .then(cartData => {
+            if (!cartData || !cartData.updatedCart || !cartData.updatedCart.products) {
+                console.error('No cart data found');
+                this.setState({ products: [], loading: false });
+                return;
+            }
+
+            // Assuming cartData directly contains the products or is the array of cart items
+            const productsInCart = cartData.updatedCart ? cartData.updatedCart.products : cartData.products;
+
+            // Fetch details for each product
+            const productFetchPromises = productsInCart.map(product =>
+                fetch(`http://localhost:8000/api/products/${product.productId}`)
+                    .then(response => response.json())
+                    .then(productDetails => ({
+                        ...productDetails, // Assume this has price and other details
+                        quantity: product.quantity,
+                    }))
+            );
+
+            Promise.all(productFetchPromises)
+                .then(products => this.setState({ products, loading: false }))
+                .catch(error => {
+                    console.error('Error fetching product details:', error);
+                    this.setState({ loading: false });
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching cart data:', error);
+            this.setState({ loading: false });
+        });
+}
+
+
 
   handleQuantityChange = (productId, quantity) => {
     this.setState(prevState => ({
@@ -24,10 +64,32 @@ class CartPage extends React.Component {
   };
 
   handleRemoveProduct = (productId) => {
-    this.setState(prevState => ({
-      products: prevState.products.filter(product => product.id !== productId),
-    }));
-  };
+    console.log(productId);
+    fetch(`http://localhost:8000/api/cart/remove/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())  // Ensure the backend sends a JSON response
+    .then(data => {
+        if (data.success) {
+            this.setState(prevState => ({
+                // Filter out the product that has been deleted
+                products: prevState.products.filter(product => product.productId !== productId),
+            }));
+        } else {
+            // Log or display an error message if the operation was not successful
+            console.error('Error removing product from cart:', data.message);
+        }
+        this.fetchCartData()
+    })
+    .catch(error => {
+        console.error('Error removing product from cart:', error);
+    });
+};
+
+  
 
   calculateSubtotal = () => {
     return this.state.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
@@ -55,10 +117,9 @@ class CartPage extends React.Component {
           <div className='col-12 col-sm-4'>
             <h4>Price Details</h4>
             <p>Subtotal: ${subtotal}</p>
-            {/* <Button variant="primary">Proceed to Checkout</Button> */}
-            <Link to="/checkout" state={{ products, subtotal }}>
-    <Button variant="primary">Proceed to Checkout</Button>
-  </Link>
+            <Link to="/checkout">
+            <Button variant="primary">Proceed to Checkout</Button>
+            </Link>
           </div>
         </Row>
       </Container>

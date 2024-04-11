@@ -97,6 +97,11 @@ const Admin = () => {
       <Button variant="primary" className="mt-3">Add New Product</Button>
       </Link>
       <br /><br />
+      <h4>Want to add a new product ? </h4>
+      <Link to="/add_products">
+      <Button variant="primary" className="mt-3">Add New Product</Button>
+      </Link>
+      <br /><br />
       {/* Display existing products */}
       <Row className="gx-4">
         {products.map((product) => (

@@ -28,6 +28,7 @@ async function getProducts() {
 
 
 
+
 async function insertProducts(req){
   const {product_name,price,image} = req.body;
   const result = await db.collection("products").insertOne({product_name,price,image});
