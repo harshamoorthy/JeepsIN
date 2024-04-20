@@ -79,7 +79,7 @@ function Signup(){
                     </button>
                 </form>
                     <p>Already have an account ?</p>
-                    <Link to="/signup" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
+                    <Link to="/login" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
                         Login
                     </Link>
                 

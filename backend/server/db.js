@@ -131,4 +131,4 @@ async function getProductById(productId) {
     }
   }
   
-module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder};
+module.exports = { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder, getUserByUsername};

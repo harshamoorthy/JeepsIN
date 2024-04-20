@@ -8,14 +8,14 @@ const Footer = () => {
         <Row>
           <Col md={6}>
             <h5>JeepsIN</h5>
-            <p>tagline</p>
+            <p>Drive in style</p>
           </Col>
           <Col md={3}>
             <h5>Quick Links</h5>
             <ul className="list-unstyled">
               <li><a href="/">Home</a></li>
-              <li><a href="">About</a></li>
-              <li><a href="">Contact</a></li>
+              <li><a href="/return_product">Returns</a></li>
+              <li><a href="/cart">Cart</a></li>
             </ul>
           </Col>
           <Col md={3}>

@@ -8,9 +8,9 @@ class CartPage extends React.Component {
     super(props);
     this.state = {
       products: [
-        { id: 1, title: 'Product 1', price: 100, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 2, title: 'Product 2', price: 200, quantity: 2 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
-        { id: 3, title: 'Product 3', price: 300, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/81XZ-Uz2fZL._AC_UF1000,1000_QL80_.jpg"},
+        { id: 1, title: 'Center High-Mount Stop Light (CHMSL) Relocation Kit - Mopar', price: 79, quantity: 1 ,imageUrl:"https://s3.amazonaws.com/rp-part-images/assets/74a526c92119977e5c752cd83cc3ba09.webp"},
+        { id: 2, title: 'snakes themed jeeps', price: 55, quantity: 2 ,imageUrl:"https://images.pexels.com/photos/1682666/pexels-photo-1682666.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"},
+        { id: 3, title: 'RUGCEL WINCH 12000lb Waterproof Electric', price: 400, quantity: 1 ,imageUrl:"https://m.media-amazon.com/images/I/61jhbdd9iJL._AC_SX425_.jpg"},
       ],
     };
   }
