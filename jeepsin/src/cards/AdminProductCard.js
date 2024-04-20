@@ -1,4 +1,5 @@
 import React from 'react';
+import './Productcard.css'; 
 import { Card, Button} from 'react-bootstrap';
 import './Productcard.css'; 
 
@@ -12,8 +13,9 @@ const ProductCard = ({ product, onEditClick, onDeleteClick}) => {
         <Card.Text>
           Price: ${product.price}
         </Card.Text>
-        <Button variant="primary" onClick={onEditClick}>Edit</Button><br />
-        <Button variant="primary" onClick={onDeleteClick}>Delete</Button>
+        <Button className="product-btn" variant="primary" onClick={onEditClick}>Edit</Button>
+        <br></br>
+        <Button className="product-btn" variant="primary" onClick={onDeleteClick}>Delete</Button>
       </Card.Body>
     </Card>
   );

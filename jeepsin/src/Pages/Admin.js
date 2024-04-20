@@ -92,6 +92,7 @@ const Admin = () => {
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Admin Panel</h2>
+      <br /><br />
       <h4>Want to add a new product ? </h4>
       <Link to="/add_products">
       <Button variant="primary" className="mt-3">Add New Product</Button>

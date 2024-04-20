@@ -1,12 +1,12 @@
 const express = require('express');
 
 const cors = require('cors');  
-const { connect_to_db ,getProducts , insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, insertOrder, getUserByUsername} = require("./db");
+const { connect_to_db ,getProducts, insertProducts ,deleteProduct,editedProducts, insertQRCode, getProductById, getUserByUsername,insertOrder} = require("./db");
 const { MongoClient } = require("mongodb");
 const bcryptjs = require('bcryptjs');
 const QRCode = require('qrcode');
 require("dotenv").config();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
 // const userModel = require('./user');
@@ -35,6 +35,7 @@ connect_to_db()
       }
     });
 
+
     app.get("/api/products/:id", async (req, res) => {
       try {
         const productId = req.params.id;
@@ -48,6 +49,8 @@ connect_to_db()
         res.status(500).json({ error: "Internal Server Error" });
       }
     });
+
+
 
     //signup functionality
     app.post("/signup", async (req, res) => {
@@ -66,7 +69,7 @@ connect_to_db()
           res.status(400).json({ "err": err.message });
       }
   });
-  //login
+
   //login 
   app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -181,7 +184,7 @@ app.post("/api/place_order", async (req, res) => {
     //cart routes
     app.post("/api/cart/add", cartController.addItemToCart);
     app.delete(
-      "/api/cart/remove/:userId/:productId",
+      "/api/cart/remove/:productId",
       cartController.removeItemFromCart
     );
     app.get("/api/cart", cartController.getCart);
